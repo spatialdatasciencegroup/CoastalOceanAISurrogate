@@ -1,5 +1,18 @@
 # [IPDPS '25] Accelerate Coastal Ocean Circulation Model with AI Surrogate
 
+## Get Started
+You can launch the training with the following command:
+```bash
+torchrun \
+  --nnodes <NUM_NODES> \
+  --nproc_per_node <NUM_GPUS_PER_NODE> \
+  --rdzv_id <UNIQUE_JOB_ID> \
+  --rdzv_backend c10d \
+  --rdzv_endpoint <MASTER_IP>:<MASTER_PORT> \
+  main.py \
+  --data_path <DATA_PATH> \
+  --output_path <OUTPUT_PATH>
+```
 
 ## Citation
 Please cite our paper if you find this code useful for your work:
