@@ -7,7 +7,7 @@ from utils import *
 
 
 def train(train_loader, val_loader, model, optimizer, scheduler, patience, epoch_num, valid_freq, output_path):
-	grad_scaler = torch.cuda.amp.GradScaler()
+	grad_scaler = torch.amp.GradScaler('cuda')
 	early_stop = EarlyStopping(patience)
 
 	train_curve = []
@@ -25,7 +25,7 @@ def train(train_loader, val_loader, model, optimizer, scheduler, patience, epoch
 			for batch in train_loader:
 				x_2d, y_2d, mask_2d, x_3d, y_3d, mask_3d = [i.cuda(non_blocking=True) for i in batch]
 
-				with torch.cuda.amp.autocast():
+				with torch.amp.autocast('cuda'):
 					pred_3d, pred_2d = model((x_3d, x_2d))
 					loss = torch.sum(F.mse_loss(pred_3d, y_3d, reduction='none') * mask_3d) / torch.sum(mask_3d) + \
 					       torch.sum(F.mse_loss(pred_2d, y_2d, reduction='none') * mask_2d) / torch.sum(mask_2d)
@@ -53,7 +53,7 @@ def train(train_loader, val_loader, model, optimizer, scheduler, patience, epoch
 			model.eval()
 			batch_losses_v = []
 			with torch.no_grad():
-				with torch.cuda.amp.autocast():
+				with torch.amp.autocast('cuda'):
 					for batch in val_loader:
 						x_2d, y_2d, mask_2d, x_3d, y_3d, mask_3d = [i.cuda(non_blocking=True) for i in batch]
 						pred_3d, pred_2d = model((x_3d, x_2d))
